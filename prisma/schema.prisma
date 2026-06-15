@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model MissionVision {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  category    String
+  date        String
+  desc        String
+  imgUrl      String
+  isPast      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model StudentSpotlight {
+  id          Int      @id @default(autoincrement())
+  name        String
+  talent      String
+  quote       String
+  imgUrl      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Executive {
+  id          Int      @id @default(autoincrement())
+  name        String
+  role        String
+  imgUrl      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WelfareInitiative {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  imgUrl      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
