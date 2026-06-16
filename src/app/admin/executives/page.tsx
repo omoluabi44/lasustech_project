@@ -46,8 +46,8 @@ export default function ExecutivesAdmin() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (file && file.size > 4 * 1024 * 1024) {
-      alert("Image is too large. Please upload an image smaller than 4MB.");
+    if (file && file.size > 20 * 1024 * 1024) {
+      alert("Image is too large. Please upload an image smaller than 20MB.");
       return;
     }
     setIsSubmitting(true);
