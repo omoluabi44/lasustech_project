@@ -26,11 +26,23 @@ export default function SpotlightAdmin() {
 
   const handleUpload = async () => {
     if (!file) return '';
-    const formData = new FormData();
-    formData.append('file', file);
-    const res = await fetch('/api/upload', { method: 'POST', body: formData });
-    const data = await res.json();
-    return data.url;
+    
+    const presignRes = await fetch(`/api/upload/presign?filename=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(file.type)}`);
+    const { presignedUrl, publicUrl } = await presignRes.json();
+
+    if (!presignedUrl) throw new Error("Failed to get presigned URL");
+
+    const uploadRes = await fetch(presignedUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+
+    if (!uploadRes.ok) throw new Error("Failed to upload to S3");
+
+    return publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,8 +83,8 @@ export default function SpotlightAdmin() {
           <textarea className="border p-2 rounded md:col-span-2" placeholder="Quote" value={quote} onChange={e=>setQuote(e.target.value)} required />
           <input type="file" accept="image/*" className="border p-2 rounded md:col-span-2" onChange={e=>{
             const selectedFile = e.target.files?.[0] || null;
-            if (selectedFile && selectedFile.size > 4 * 1024 * 1024) {
-              alert("Image is too large. Please select an image smaller than 4MB.");
+            if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {
+              alert("Image is too large. Please select an image smaller than 20MB.");
               e.target.value = '';
               setFile(null);
             } else {
