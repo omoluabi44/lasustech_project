@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 const staticWelfares = [
   { id: 1, title: 'Medical aid & intervention', desc: 'We coordinate immediate medical aid and financial assistance. The union operates a 24/7 rapid response framework ensuring no student faces a health crisis alone.', img: '/welfare_med_1.png' },
@@ -53,9 +54,14 @@ export function StudentWelfare({ data = [] }: { data?: any[] }) {
               </div>
               <div className="px-2">
                 <h3 className="font-sans text-xl md:text-2xl font-semibold text-slate-800 mb-3 tracking-tight">{wf.title}</h3>
-                <p className="text-slate-500 text-sm font-light leading-relaxed">
+                <p className="text-slate-500 text-sm font-light leading-relaxed mb-4">
                   {wf.desc || wf.description}
                 </p>
+                {wf.id && typeof wf.id === 'number' && wf.id > 10 ? (
+                  <Link href={`/welfare/${wf.id}`} className="text-xs font-semibold text-sky-blue hover:text-sky-deep flex items-center gap-1 transition-colors">Read Details &rarr;</Link>
+                ) : (
+                  <span className="text-xs font-semibold text-slate-300">Preview Only</span>
+                )}
               </div>
             </motion.div>
           ))}

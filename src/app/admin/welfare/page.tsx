@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import { getWelfares, createWelfare, deleteWelfare } from '../actions';
 import { Trash2, Plus, Loader2 } from 'lucide-react';
+import { MarkdownEditor } from '@/components/admin/MarkdownEditor';
 
 export default function WelfareAdmin() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [content, setContent] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -53,8 +55,8 @@ export default function WelfareAdmin() {
     setIsSubmitting(true);
     try {
       const imgUrl = await handleUpload();
-      await createWelfare({ title, description, imgUrl });
-      setTitle(''); setDescription(''); setFile(null);
+      await createWelfare({ title, description, content, imgUrl });
+      setTitle(''); setDescription(''); setContent(''); setFile(null);
       await loadData();
     } catch (error) {
       alert("Failed to upload image. Please try again.");
@@ -78,7 +80,8 @@ export default function WelfareAdmin() {
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><Plus size={20}/> Add Initiative</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input className="border p-2 rounded md:col-span-2" placeholder="Title" value={title} onChange={e=>setTitle(e.target.value)} required />
-          <textarea className="border p-2 rounded md:col-span-2" placeholder="Description" value={description} onChange={e=>setDescription(e.target.value)} required />
+          <textarea className="border p-2 rounded md:col-span-2" placeholder="Short Excerpt (shows on homepage)" value={description} onChange={e=>setDescription(e.target.value)} required />
+          <MarkdownEditor value={content} onChange={setContent} placeholder="Write the full initiative details here... Use markdown for styling." />
           <input type="file" accept="image/*" className="border p-2 rounded md:col-span-2" onChange={e=>{
             const selectedFile = e.target.files?.[0] || null;
             if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {

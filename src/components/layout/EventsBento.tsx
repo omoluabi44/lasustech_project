@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 const upcomingEvents = [
   {
@@ -38,8 +39,8 @@ const pastEvents = [
 ];
 
 function EventCard({ event, large = false }: { event: any, large?: boolean }) {
-  return (
-    <div className={`relative rounded-3xl overflow-hidden group border border-sky-100/50 shadow-sm shrink-0 snap-center md:snap-align-none bg-white w-[85vw] md:w-full ${large ? 'h-[350px] md:h-[400px]' : 'h-[250px] md:h-[300px]'}`}>
+  const innerContent = (
+    <>
       <Image src={event.img || event.imgUrl} alt={event.title} fill sizes="(max-width: 768px) 85vw, 50vw" className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/10 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
       
@@ -54,6 +55,21 @@ function EventCard({ event, large = false }: { event: any, large?: boolean }) {
           {event.desc}
         </p>
       </div>
+    </>
+  );
+
+  if (event.id) {
+    return (
+      <Link href={`/events/${event.id}`} className={`block relative rounded-3xl overflow-hidden group border border-sky-100/50 shadow-sm shrink-0 snap-center md:snap-align-none bg-white w-[85vw] md:w-full cursor-pointer hover:shadow-md transition-shadow ${large ? 'h-[350px] md:h-[400px]' : 'h-[250px] md:h-[300px]'}`}>
+        {innerContent}
+      </Link>
+    );
+  }
+
+  // Fallback for hardcoded preview events without an ID
+  return (
+    <div className={`relative rounded-3xl overflow-hidden group border border-sky-100/50 shadow-sm shrink-0 snap-center md:snap-align-none bg-white w-[85vw] md:w-full ${large ? 'h-[350px] md:h-[400px]' : 'h-[250px] md:h-[300px]'}`}>
+      {innerContent}
     </div>
   );
 }

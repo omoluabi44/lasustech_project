@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { getEvents, createEvent, deleteEvent } from '../actions';
 import { Trash2, Plus, Loader2 } from 'lucide-react';
+import { MarkdownEditor } from '@/components/admin/MarkdownEditor';
 
 export default function EventsAdmin() {
   const [events, setEvents] = useState<any[]>([]);
@@ -11,6 +12,7 @@ export default function EventsAdmin() {
   const [category, setCategory] = useState('');
   const [date, setDate] = useState('');
   const [desc, setDesc] = useState('');
+  const [content, setContent] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [isPast, setIsPast] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,8 +59,8 @@ export default function EventsAdmin() {
     setIsSubmitting(true);
     try {
       const imgUrl = await handleUpload();
-      await createEvent({ title, category, date, desc, imgUrl, isPast });
-      setTitle(''); setCategory(''); setDate(''); setDesc(''); setFile(null); setIsPast(false);
+      await createEvent({ title, category, date, desc, content, imgUrl, isPast });
+      setTitle(''); setCategory(''); setDate(''); setDesc(''); setContent(''); setFile(null); setIsPast(false);
       await loadData();
     } catch (error) {
       alert("Failed to upload image. Please try again.");
@@ -88,7 +90,8 @@ export default function EventsAdmin() {
             <input type="checkbox" id="ispast" checked={isPast} onChange={e=>setIsPast(e.target.checked)} />
             <label htmlFor="ispast">Is Past Event?</label>
           </div>
-          <textarea className="border p-2 rounded md:col-span-2" placeholder="Description" value={desc} onChange={e=>setDesc(e.target.value)} required />
+          <textarea className="border p-2 rounded md:col-span-2" placeholder="Short Excerpt (shows on homepage)" value={desc} onChange={e=>setDesc(e.target.value)} required />
+          <MarkdownEditor value={content} onChange={setContent} placeholder="Write the full event details here... Use markdown for styling and insert images to make it rich." />
           <input type="file" accept="image/*" className="border p-2 rounded md:col-span-2" onChange={e=>{
             const selectedFile = e.target.files?.[0] || null;
             if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {

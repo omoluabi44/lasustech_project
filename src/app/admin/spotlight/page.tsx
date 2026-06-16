@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { getSpotlights, createSpotlight, deleteSpotlight } from '../actions';
 import { Trash2, Plus, Loader2 } from 'lucide-react';
+import { MarkdownEditor } from '@/components/admin/MarkdownEditor';
 
 export default function SpotlightAdmin() {
   const [items, setItems] = useState<any[]>([]);
@@ -10,6 +11,7 @@ export default function SpotlightAdmin() {
   const [name, setName] = useState('');
   const [talent, setTalent] = useState('');
   const [quote, setQuote] = useState('');
+  const [content, setContent] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -54,8 +56,8 @@ export default function SpotlightAdmin() {
     setIsSubmitting(true);
     try {
       const imgUrl = await handleUpload();
-      await createSpotlight({ name, talent, quote, imgUrl });
-      setName(''); setTalent(''); setQuote(''); setFile(null);
+      await createSpotlight({ name, talent, quote, content, imgUrl });
+      setName(''); setTalent(''); setQuote(''); setContent(''); setFile(null);
       await loadData();
     } catch (error) {
       alert("Failed to upload image. Please try again.");
@@ -80,7 +82,8 @@ export default function SpotlightAdmin() {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input className="border p-2 rounded" placeholder="Name" value={name} onChange={e=>setName(e.target.value)} required />
           <input className="border p-2 rounded" placeholder="Talent" value={talent} onChange={e=>setTalent(e.target.value)} required />
-          <textarea className="border p-2 rounded md:col-span-2" placeholder="Quote" value={quote} onChange={e=>setQuote(e.target.value)} required />
+          <textarea className="border p-2 rounded md:col-span-2" placeholder="Short Excerpt (shows on homepage)" value={quote} onChange={e=>setQuote(e.target.value)} required />
+          <MarkdownEditor value={content} onChange={setContent} placeholder="Write the full student story here... Use markdown for styling." />
           <input type="file" accept="image/*" className="border p-2 rounded md:col-span-2" onChange={e=>{
             const selectedFile = e.target.files?.[0] || null;
             if (selectedFile && selectedFile.size > 20 * 1024 * 1024) {

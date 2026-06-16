@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const students = [
   { id: 1, name: "Sarah O.", talent: "AI Developer", quote: "Building models that solve real campus problems.", img: "/student_spot_1.png" },
@@ -83,6 +84,13 @@ export function StudentSpotlight({ data = [] }: { data?: any[] }) {
                          <p className="text-sky-100/90 italic max-w-md border-l-2 border-sky-400 pl-4 py-1 text-sm lg:text-base">
                            "{stu.quote}"
                          </p>
+                         <div className="mt-4">
+                           {stu.id && typeof stu.id === 'number' && stu.id > 10 ? (
+                             <Link href={`/spotlight/${stu.id}`} className="text-sm font-semibold text-white bg-sky-blue px-4 py-2 rounded-full hover:bg-sky-500 transition-colors inline-block">Read Full Story</Link>
+                           ) : (
+                             <span className="text-sm font-semibold text-white/50 px-4 py-2 border border-white/20 rounded-full inline-block">Preview Only</span>
+                           )}
+                         </div>
                       </div>
 
                    </div>
@@ -104,9 +112,14 @@ export function StudentSpotlight({ data = [] }: { data?: any[] }) {
                      {stu.talent}
                   </span>
                   <h3 className="font-sans text-3xl font-black text-white mb-3 tracking-tight">{stu.name}</h3>
-                  <p className="text-sky-100/90 italic text-sm border-l-2 border-sky-400 pl-3 py-1">
+                  <p className="text-sky-100/90 italic text-sm border-l-2 border-sky-400 pl-3 py-1 mb-4">
                      "{stu.quote}"
                   </p>
+                  {stu.id && typeof stu.id === 'number' && stu.id > 10 ? (
+                    <Link href={`/spotlight/${stu.id}`} className="text-xs font-semibold text-white bg-sky-blue px-4 py-2 rounded-full hover:bg-sky-500 transition-colors inline-block">Read Full Story</Link>
+                  ) : (
+                    <span className="text-xs font-semibold text-white/50 px-4 py-2 border border-white/20 rounded-full inline-block">Preview Only</span>
+                  )}
                 </div>
              </div>
            ))}
