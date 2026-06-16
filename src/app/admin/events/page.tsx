@@ -77,7 +77,16 @@ export default function EventsAdmin() {
             <label htmlFor="ispast">Is Past Event?</label>
           </div>
           <textarea className="border p-2 rounded md:col-span-2" placeholder="Description" value={desc} onChange={e=>setDesc(e.target.value)} required />
-          <input type="file" accept="image/*" className="border p-2 rounded md:col-span-2" onChange={e=>setFile(e.target.files?.[0] || null)} required />
+          <input type="file" accept="image/*" className="border p-2 rounded md:col-span-2" onChange={e=>{
+            const selectedFile = e.target.files?.[0] || null;
+            if (selectedFile && selectedFile.size > 4 * 1024 * 1024) {
+              alert("Image is too large. Please select an image smaller than 4MB.");
+              e.target.value = '';
+              setFile(null);
+            } else {
+              setFile(selectedFile);
+            }
+          }} required />
           <button type="submit" disabled={isSubmitting} className="bg-slate-900 text-white p-2 rounded hover:bg-slate-800 md:col-span-2 flex items-center justify-center gap-2 disabled:bg-slate-700 disabled:cursor-not-allowed">
             {isSubmitting && <Loader2 className="animate-spin" size={20} />}
             {isSubmitting ? 'Creating Event...' : 'Create Event'}
