@@ -93,3 +93,30 @@ export async function deleteWelfare(id: number) {
   revalidatePath('/admin/welfare');
   revalidatePath('/');
 }
+
+// -- Engagement (Likes & Comments) --
+export async function addLike(type: 'event' | 'spotlight' | 'welfare', id: number) {
+  if (type === 'event') {
+    await prisma.event.update({ where: { id }, data: { likes: { increment: 1 } } });
+    revalidatePath(`/events/${id}`);
+  } else if (type === 'spotlight') {
+    await prisma.studentSpotlight.update({ where: { id }, data: { likes: { increment: 1 } } });
+    revalidatePath(`/spotlight/${id}`);
+  } else if (type === 'welfare') {
+    await prisma.welfareInitiative.update({ where: { id }, data: { likes: { increment: 1 } } });
+    revalidatePath(`/welfare/${id}`);
+  }
+}
+
+export async function postComment(type: 'event' | 'spotlight' | 'welfare', id: number, authorName: string, text: string) {
+  const data: any = { authorName, text };
+  if (type === 'event') data.eventId = id;
+  if (type === 'spotlight') data.spotlightId = id;
+  if (type === 'welfare') data.welfareId = id;
+
+  await prisma.comment.create({ data });
+
+  if (type === 'event') revalidatePath(`/events/${id}`);
+  if (type === 'spotlight') revalidatePath(`/spotlight/${id}`);
+  if (type === 'welfare') revalidatePath(`/welfare/${id}`);
+}

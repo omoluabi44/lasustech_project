@@ -6,12 +6,14 @@ import { ArrowLeft, Star } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { EngagementBar } from '@/components/EngagementBar';
 
 export const revalidate = 60;
 
 export default async function SpotlightPage({ params }: { params: { id: string } }) {
   const spotlight = await prisma.studentSpotlight.findUnique({
-    where: { id: parseInt(params.id) }
+    where: { id: parseInt(params.id) },
+    include: { comments: { orderBy: { createdAt: 'desc' } } }
   });
 
   if (!spotlight) {
@@ -55,6 +57,13 @@ export default async function SpotlightPage({ params }: { params: { id: string }
             <p className="text-slate-500 italic">No additional story available for this student.</p>
           )}
         </div>
+
+        <EngagementBar 
+          type="spotlight" 
+          id={spotlight.id} 
+          initialLikes={spotlight.likes || 0} 
+          comments={spotlight.comments} 
+        />
       </article>
 
       <Footer />

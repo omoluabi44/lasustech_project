@@ -27,9 +27,11 @@ model Event {
   desc        String
   imgUrl      String
   content     String?
-  isPast      Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isPast      Boolean   @default(false)
+  likes       Int       @default(0)
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model StudentSpotlight {
@@ -39,8 +41,10 @@ model StudentSpotlight {
   quote       String
   imgUrl      String
   content     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  likes       Int       @default(0)
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Executive {
@@ -58,6 +62,24 @@ model WelfareInitiative {
   description String
   imgUrl      String
   content     String?
+  likes       Int       @default(0)
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Comment {
+  id          Int      @id @default(autoincrement())
+  authorName  String
+  text        String
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  eventId     Int?
+  event       Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  spotlightId Int?
+  spotlight   StudentSpotlight? @relation(fields: [spotlightId], references: [id], onDelete: Cascade)
+
+  welfareId   Int?
+  welfare     WelfareInitiative? @relation(fields: [welfareId], references: [id], onDelete: Cascade)
 }

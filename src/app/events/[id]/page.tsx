@@ -6,12 +6,14 @@ import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { EngagementBar } from '@/components/EngagementBar';
 
 export const revalidate = 60;
 
 export default async function EventPage({ params }: { params: { id: string } }) {
   const event = await prisma.event.findUnique({
-    where: { id: parseInt(params.id) }
+    where: { id: parseInt(params.id) },
+    include: { comments: { orderBy: { createdAt: 'desc' } } }
   });
 
   if (!event) {
@@ -58,6 +60,13 @@ export default async function EventPage({ params }: { params: { id: string } }) 
             <p className="text-slate-500 italic">No additional details available for this event.</p>
           )}
         </div>
+
+        <EngagementBar 
+          type="event" 
+          id={event.id} 
+          initialLikes={event.likes || 0} 
+          comments={event.comments} 
+        />
       </article>
 
       <Footer />

@@ -6,12 +6,14 @@ import { ArrowLeft, Heart } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { EngagementBar } from '@/components/EngagementBar';
 
 export const revalidate = 60;
 
 export default async function WelfarePage({ params }: { params: { id: string } }) {
   const welfare = await prisma.welfareInitiative.findUnique({
-    where: { id: parseInt(params.id) }
+    where: { id: parseInt(params.id) },
+    include: { comments: { orderBy: { createdAt: 'desc' } } }
   });
 
   if (!welfare) {
@@ -55,6 +57,13 @@ export default async function WelfarePage({ params }: { params: { id: string } }
             <p className="text-slate-500 italic">No additional details available for this initiative.</p>
           )}
         </div>
+
+        <EngagementBar 
+          type="welfare" 
+          id={welfare.id} 
+          initialLikes={welfare.likes || 0} 
+          comments={welfare.comments} 
+        />
       </article>
 
       <Footer />
