@@ -38,12 +38,21 @@ export default function EventsAdmin() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (file && file.size > 4 * 1024 * 1024) {
+      alert("Image is too large. Please upload an image smaller than 4MB.");
+      return;
+    }
     setIsSubmitting(true);
-    const imgUrl = await handleUpload();
-    await createEvent({ title, category, date, desc, imgUrl, isPast });
-    setTitle(''); setCategory(''); setDate(''); setDesc(''); setFile(null); setIsPast(false);
-    await loadData();
-    setIsSubmitting(false);
+    try {
+      const imgUrl = await handleUpload();
+      await createEvent({ title, category, date, desc, imgUrl, isPast });
+      setTitle(''); setCategory(''); setDate(''); setDesc(''); setFile(null); setIsPast(false);
+      await loadData();
+    } catch (error) {
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -68,7 +77,7 @@ export default function EventsAdmin() {
             <label htmlFor="ispast">Is Past Event?</label>
           </div>
           <textarea className="border p-2 rounded md:col-span-2" placeholder="Description" value={desc} onChange={e=>setDesc(e.target.value)} required />
-          <input type="file" className="border p-2 rounded md:col-span-2" onChange={e=>setFile(e.target.files?.[0] || null)} required />
+          <input type="file" accept="image/*" className="border p-2 rounded md:col-span-2" onChange={e=>setFile(e.target.files?.[0] || null)} required />
           <button type="submit" disabled={isSubmitting} className="bg-slate-900 text-white p-2 rounded hover:bg-slate-800 md:col-span-2 flex items-center justify-center gap-2 disabled:bg-slate-700 disabled:cursor-not-allowed">
             {isSubmitting && <Loader2 className="animate-spin" size={20} />}
             {isSubmitting ? 'Creating Event...' : 'Create Event'}
