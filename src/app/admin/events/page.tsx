@@ -76,8 +76,8 @@ export default function EventsAdmin() {
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
-        <table className="w-full text-left">
+      <div className="bg-white rounded-2xl shadow-sm border overflow-x-auto">
+        <table className="w-full text-left min-w-[600px]">
           <thead className="bg-slate-50 border-b">
             <tr>
               <th className="p-4">Image</th>
