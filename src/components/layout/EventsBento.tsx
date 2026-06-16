@@ -103,8 +103,9 @@ export function EventsBento({ data = [] }: { data?: any[] }) {
 
           {/* Horizontal scroll */}
           <div className="flex flex-row gap-4 overflow-x-auto snap-x snap-mandatory md:overflow-visible md:grid md:grid-cols-2 no-scrollbar px-4 md:px-8 pb-4 w-full">
-             {displayUpcoming[0] && <EventCard event={displayUpcoming[0]} large />}
-             {displayUpcoming[1] && <EventCard event={displayUpcoming[1]} large />}
+             {displayUpcoming.map((ev, i) => (
+               <EventCard key={ev.id || i} event={ev} large />
+             ))}
           </div>
       </div>
 
@@ -126,8 +127,9 @@ export function EventsBento({ data = [] }: { data?: any[] }) {
           </motion.div>
 
           <div className="flex flex-row gap-4 overflow-x-auto snap-x snap-mandatory md:overflow-visible md:grid md:grid-cols-2 no-scrollbar px-4 md:px-8 pb-4 w-full">
-             {displayPast[0] && <EventCard event={displayPast[0]} />}
-             {displayPast[1] && <EventCard event={displayPast[1]} />}
+             {displayPast.map((ev, i) => (
+               <EventCard key={ev.id || i} event={ev} />
+             ))}
           </div>
       </div>
 
